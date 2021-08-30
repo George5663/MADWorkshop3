@@ -2,63 +2,97 @@ package com.example.madworkshop3;
 
 import android.os.Bundle;
 
+import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
+import androidx.recyclerview.widget.GridLayoutManager;
+import androidx.recyclerview.widget.RecyclerView;
 
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
+import android.widget.TextView;
 
-/**
- * A simple {@link Fragment} subclass.
- * Use the {@link fragment_selector#newInstance} factory method to
- * create an instance of this fragment.
- */
 public class fragment_selector extends Fragment {
-
-    // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PARAM1 = "param1";
-    private static final String ARG_PARAM2 = "param2";
-
-    // TODO: Rename and change types of parameters
-    private String mParam1;
-    private String mParam2;
-
+    private Structure currStructure;
     public fragment_selector() {
-        // Required empty public constructor
-    }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment fragment_selector.
-     */
-    // TODO: Rename and change types and number of parameters
-    public static fragment_selector newInstance(String param1, String param2) {
-        fragment_selector fragment = new fragment_selector();
-        Bundle args = new Bundle();
-        args.putString(ARG_PARAM1, param1);
-        args.putString(ARG_PARAM2, param2);
-        fragment.setArguments(args);
-        return fragment;
-    }
-
-    @Override
-    public void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        if (getArguments() != null) {
-            mParam1 = getArguments().getString(ARG_PARAM1);
-            mParam2 = getArguments().getString(ARG_PARAM2);
-        }
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_selector, container, false);
+        StructureData data = StructureData.get();
+        View view = inflater.inflate(R.layout.fragment_selector, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.selectorRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(
+                getActivity(),
+                1,
+                GridLayoutManager.HORIZONTAL,
+                false
+        ));
+        fragment_selector.SelectorAdapter adapter = new fragment_selector.SelectorAdapter(data);
+        recyclerView.setAdapter(adapter);
+        return view;
+    }
+
+    public Structure getCurrStructure()
+    {
+        return currStructure;
+    }
+
+    public void resetClicker()
+    {
+        currStructure = null;
+    }
+
+    private class SelectorAdapter extends RecyclerView.Adapter<fragment_selector.DataViewHolder>
+    {
+        private StructureData data;
+        public SelectorAdapter(StructureData data)
+        {
+            this.data = data;
+        }
+
+        @NonNull
+        @Override
+        public fragment_selector.DataViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType)
+        {
+            LayoutInflater layoutInflater = LayoutInflater.from(getActivity());
+            return new fragment_selector.DataViewHolder(layoutInflater, parent);
+        }
+
+        @Override
+        public void onBindViewHolder(@NonNull fragment_selector.DataViewHolder holder, int position)
+        {
+            holder.image.setOnClickListener(view -> {
+                currStructure = data.get(position);
+            });
+
+            holder.bind(data.get(position));
+        }
+
+        @Override
+        public int getItemCount()
+        {
+            return data.size();
+        }
+    }
+
+    private class DataViewHolder extends RecyclerView.ViewHolder
+    {
+        private ImageView image;
+        private TextView text;
+        public DataViewHolder(LayoutInflater layoutInflater, ViewGroup parent)
+        {
+            super(layoutInflater.inflate(R.layout.list_section, parent, false));
+            image = (ImageView) itemView.findViewById(R.id.imageView);
+            text = (TextView) itemView.findViewById(R.id.textView);
+        }
+
+        public void bind(Structure data)
+        {
+            image.setImageResource(data.getDrawableId());
+            text.setText(data.getLabel());
+        }
     }
 }

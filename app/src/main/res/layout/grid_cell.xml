@@ -14,7 +14,12 @@
         app:layout_constraintEnd_toStartOf="@id/topRight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@android:color/transparent" />
+        tools:srcCompat="@android:color/transparent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.5"
+        />
 
     <ImageView
         android:id="@+id/bottomRight"
@@ -24,7 +29,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/bottomLeft"
         app:layout_constraintTop_toBottomOf="@id/topRight"
-        tools:srcCompat="@android:color/transparentple/avatars[1]" />
+        tools:srcCompat="@android:color/transparent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.5"
+        />
 
     <ImageView
         android:id="@+id/bottomLeft"
@@ -34,7 +44,12 @@
         app:layout_constraintEnd_toStartOf="@id/bottomRight"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/topLeft"
-        tools:srcCompat="@android:color/transparent" />
+        tools:srcCompat="@android:color/transparent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.5"
+        />
 
     <ImageView
         android:id="@+id/topRight"
@@ -44,7 +59,12 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@id/topLeft"
         app:layout_constraintTop_toTopOf="parent"
-        tools:srcCompat="@android:color/transparent" />
+        tools:srcCompat="@android:color/transparent"
+        app:layout_constraintWidth_default="percent"
+        app:layout_constraintHeight_default="percent"
+        app:layout_constraintWidth_percent="0.5"
+        app:layout_constraintHeight_percent="0.5"
+        />
 
     <ImageView
         android:id="@+id/structure"

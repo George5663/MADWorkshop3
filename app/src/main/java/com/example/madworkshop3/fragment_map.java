@@ -1,7 +1,6 @@
 package com.example.madworkshop3;
 
 import android.os.Bundle;
-
 import androidx.annotation.NonNull;
 import androidx.fragment.app.Fragment;
 import androidx.recyclerview.widget.GridLayoutManager;
@@ -15,15 +14,36 @@ import android.widget.ImageView;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
 
 public class fragment_map extends Fragment {
-    private View view;
+    private fragment_selector selector;
     public fragment_map() {
+    }
+    @Override
+    public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                             Bundle savedInstanceState) {
+        MapData data = MapData.get();
+        View view = inflater.inflate(R.layout.fragment_map, container, false);
+        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mapRecyclerView);
+        recyclerView.setLayoutManager(new GridLayoutManager(
+                getActivity(),
+                MapData.HEIGHT,
+                GridLayoutManager.HORIZONTAL,
+                false
+        ));
+        MapAdapter adapter = new MapAdapter(data);
+        recyclerView.setAdapter(adapter);
+        return view;
+    }
+    public void setSelector(fragment_selector selector)
+    {
+        this.selector = selector;
     }
     private class MapAdapter extends RecyclerView.Adapter<DataViewHolder>
     {
-        private List<MapElement> data;
-        public MapAdapter(List<MapElement> data)
+        private MapData data;
+        public MapAdapter(MapData data)
         {
             this.data = data;
         }
@@ -41,12 +61,31 @@ public class fragment_map extends Fragment {
         {
             int row = position % MapData.HEIGHT;
             int col = position / MapData.HEIGHT;
-            holder.bind(MapData.get().get(row, col));
+            holder.bind(data.get(row, col));
+
+            holder.structure.setOnClickListener(view -> {
+                if(selector.getCurrStructure() != null) {
+                    holder.structure.setImageResource(selector.getCurrStructure().getDrawableId());
+                    selector.resetClicker();
+                }
+            });
         }
         @Override
         public int getItemCount()
         {
-            return data.size();
+            return MapData.HEIGHT * MapData.WIDTH;
+        }
+
+        @Override
+        public long getItemId(int position)
+        {
+            return position;
+        }
+
+        @Override
+        public int getItemViewType(int position)
+        {
+            return position;
         }
     }
 
@@ -61,6 +100,10 @@ public class fragment_map extends Fragment {
         public DataViewHolder(LayoutInflater layoutInflater, ViewGroup parent)
         {
             super(layoutInflater.inflate(R.layout.grid_cell, parent, false));
+            int size = parent.getMeasuredHeight() / MapData.HEIGHT+1;
+            ViewGroup.LayoutParams lp = itemView.getLayoutParams();
+            lp.width = size;
+            lp.height = size;
             topLeft = (ImageView) itemView.findViewById(R.id.topLeft);
             topRight = (ImageView) itemView.findViewById(R.id.topRight);
             bottomLeft = (ImageView) itemView.findViewById(R.id.bottomLeft);
@@ -70,29 +113,10 @@ public class fragment_map extends Fragment {
 
         public void bind(MapElement data)
         {
-            topLeft.setBackgroundColor(data.getNorthWest());
-            topRight.setBackgroundColor(data.getNorthEast());
-            bottomLeft.setBackgroundColor(data.getSouthWest());
-            bottomRight.setBackgroundColor(data.getSouthEast());
-            if(data.getStructure() != null) {
-                structure.setImageResource(data.getStructure().getDrawableId());
-            }
+            topLeft.setImageResource(data.getNorthWest());
+            topRight.setImageResource(data.getNorthEast());
+            bottomLeft.setImageResource(data.getSouthWest());
+            bottomRight.setImageResource(data.getSouthEast());
         }
-    }
-    @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
-        view = inflater.inflate(R.layout.fragment_map, container, false);
-        RecyclerView recyclerView = (RecyclerView) view.findViewById(R.id.mapRecyclerView);
-        recyclerView.setLayoutManager(new GridLayoutManager(
-                getActivity(),
-                MapData.HEIGHT,
-                GridLayoutManager.HORIZONTAL,
-                false
-        ));
-        List<MapElement> mapData = new LinkedList<>();
-        MapAdapter adapter = new MapAdapter(mapData);
-        recyclerView.setAdapter(adapter);
-        return view;
     }
 }
