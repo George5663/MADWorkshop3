@@ -77,7 +77,7 @@ public class MapElement
      */
     public Structure getStructure()
     {
-        return structure;
+        return this.structure;
     }
 
     public void setStructure(Structure structure)
